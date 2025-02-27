@@ -1,0 +1,48 @@
+from typing import Tuple
+import torch
+import torch.nn as nn
+
+from .flexvar import FlexVAR
+from .vq_llama import VQ_models
+
+
+def build_vae_var(
+    # Shared args
+    device, patch_nums=(1, 2, 3, 4, 5, 6, 8, 10, 13, 16),   # 10 steps by default
+    # VQVAE args
+    V=4096, Cvae=32, 
+    # FlexVAR args
+    num_classes=1000, depth=16, shared_aln=False, attn_l2_norm=True,
+    flash_if_available=True, fused_if_available=True, token_dropout_p=0.05,
+    init_adaln=0.5, init_adaln_gamma=1e-5, init_head=0.02, init_std=-1,    # init_std < 0: automated
+    vae_ckpt = None
+):
+    heads = depth
+    width = depth * 64
+    dpr = 0.1 * depth/24
+    
+    # disable built-in initialization for speed
+    for clz in (nn.Linear, nn.LayerNorm, nn.BatchNorm2d, nn.SyncBatchNorm, nn.Conv1d, nn.Conv2d, nn.ConvTranspose1d, nn.ConvTranspose2d):
+        setattr(clz, 'reset_parameters', lambda self: None)
+        
+    # build models
+    vae_local = VQ_models['VQ-16'](codebook_size=V, codebook_embed_dim=Cvae)
+    vae_local.eval()
+    [p.requires_grad_(False) for p in vae_local.parameters()]
+    assert vae_ckpt is not None
+    print(f"[vae_ckpt]: {vae_ckpt}")
+    vae_local.load_state_dict(torch.load(vae_ckpt, map_location='cpu')['model'], strict=True)
+    vae_local = vae_local.to(device)
+
+    var_wo_ddp = FlexVAR(
+        vae_local=vae_local,
+        num_classes=num_classes, depth=depth, embed_dim=width, num_heads=heads, drop_rate=0., attn_drop_rate=0., drop_path_rate=dpr,
+        norm_eps=1e-6, shared_aln=shared_aln, cond_drop_rate=0.1, token_dropout_p=token_dropout_p,
+        attn_l2_norm=attn_l2_norm,
+        patch_nums=patch_nums,
+        flash_if_available=flash_if_available, fused_if_available=fused_if_available,
+    ).to(device)
+    var_wo_ddp.init_weights(init_adaln=init_adaln, init_adaln_gamma=init_adaln_gamma, init_head=init_head, init_std=init_std)
+
+
+    return vae_local, var_wo_ddp
