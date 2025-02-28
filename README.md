@@ -63,15 +63,15 @@ Moreover, when zero-shot transfer the image generation process with 13 steps, th
 - #### VQVAE Tokenizer
 
 
-  You need to download [FlexVAE.pth](https://huggingface.co/jiaosiyu1999/FlexVAR) first.
+  You need to download [FlexVAE.pth](https://huggingface.co/jiaosiyu1999/FlexVAR/resolve/main/FlexVAE.pth) first.
 
 - #### FlexVAR-Transformer  
      
   ||FID| IS| Step|Weights|
   |-----|--|-|-|-|
-  |d16|3.05|291.3|10|[FlexVARd16-epo179.pth](https://huggingface.co/jiaosiyu1999/FlexVAR) |
-  |d20|2.41|299.3|10|[FlexVARd20-epo249.pth](https://huggingface.co/jiaosiyu1999/FlexVAR) |
-  |d24|2.21|299.1|10|[FlexVARd16-epo349.pth](https://huggingface.co/jiaosiyu1999/FlexVAR) |
+  |d16|3.05|291.3|10|[FlexVARd16-epo179.pth](https://huggingface.co/jiaosiyu1999/FlexVAR/resolve/main/FlexVARd16-epo179.pth) |
+  |d20|2.41|299.3|10|[FlexVARd20-epo249.pth](https://huggingface.co/jiaosiyu1999/FlexVAR/resolve/main/FlexVARd20-epo249.pth) |
+  |d24|2.21|299.1|10|[FlexVARd16-epo349.pth](https://huggingface.co/jiaosiyu1999/FlexVAR/resolve/main/FlexVARd24-epo349.pth) |
 
 
 ## Evaluation
@@ -93,7 +93,7 @@ Moreover, when zero-shot transfer the image generation process with 13 steps, th
   ```
 - #### Zero-shot transfer with 13 steps 
 
-  Modify `args_infer_patch_nums` between steps 8 and 14 for higher visual quality.
+  Modify `args_infer_patch_nums` between steps 8 and 14.
   ```
     args_infer_patch_nums="1_2_3_4_5_6_7_8_9_10_12_14_16"
     torchrun --nnodes=1 --nproc_per_node=2 --node_rank=0  eval_c2i.py  --batch_size 16  --cfg 2.5 --top_k 900 \
@@ -106,8 +106,8 @@ Moreover, when zero-shot transfer the image generation process with 13 steps, th
   Reference ground truth .npz file of [512x512](https://openaipublic.blob.core.windows.net/diffusion/jul-2021/ref_batches/imagenet/512/VIRTUAL_imagenet512.npz) 
 
   ```
-    args_infer_patch_nums="1_2_3_4_5_6_7_8_9_10_12_14_16"
-    torchrun --nnodes=1 --nproc_per_node=2 --node_rank=0  eval_c2i.py  --batch_size 16  --cfg 2.5 --top_k 900 \
+    args_infer_patch_nums="1_2_3_4_5_6_7_8_9_10_12_14_16_23_32"
+    torchrun --nnodes=1 --nproc_per_node=2 --node_rank=0  eval_c2i.py  --batch_size 16  --cfg 3.0 --top_k 900 \
                                                                        --maxpn 16  --infer_patch_nums $args_infer_patch_nums \
                                                                        --depth 20
   ```
