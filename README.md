@@ -4,7 +4,7 @@
 <h1> FlexVAR: Flexible Visual Autoregressive Modeling without Residual Prediction</h1>
 <h3></h3>
 
-Siyu Jiao<sup>1</sup>, Gengwei Zhang<sup>2</sup>, Yinlong Qian<sup>3</sup>, Jiancheng Huang<sup>3</sup>, Yao Zhao<sup>1</sup>, Humphrey Shi<sup>4</sup>, Lin Ma<sup>3</sup>, Yunchao Wei<sup>1</sup>, Zequn<sup>3</sup> Jie<sup>3</sup>,
+Siyu Jiao<sup>1</sup>, Gengwei Zhang<sup>2</sup>, Yinlong Qian<sup>3</sup>, Jiancheng Huang<sup>3</sup>, Yao Zhao<sup>1</sup>, Humphrey Shi<sup>4</sup>, Lin Ma<sup>3</sup>, Yunchao Wei<sup>1</sup>, Zequn Jie<sup>3</sup>
 
 <sup>1</sup> BJTU, <sup>2</sup> UTS, <sup>3</sup> Meituan, <sup>4</sup> Georgia Tech
 
